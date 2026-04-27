@@ -1,0 +1,162 @@
+@import url("https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800,900&display=swap");
+@import "tailwindcss";
+
+:root {
+  /* Brand — pulled directly from the Prime Engage logo */
+  --navy-900: #061736;
+  --navy-800: #0B2555;
+  --navy-700: #0E3271;
+  --navy-600: #163F8C;
+  --navy-500: #1D56B2;
+
+  --cyan-500: #1FB9DC;
+  --cyan-400: #4ECDE8;
+  --cyan-300: #92E1F0;
+  --cyan-50:  #E8F8FC;
+
+  --amber-500: #F59242;
+  --amber-400: #F6A968;
+  --amber-300: #FBC59A;
+
+  --paper:     #F8F6EF;
+  --paper-2:   #FFFFFF;
+  --ink:       #0A1838;
+  --mute:      #5A6686;
+  --soft:      #8B93AB;
+
+  --line:        rgba(10, 24, 56, 0.08);
+  --line-strong: rgba(10, 24, 56, 0.14);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy-900: var(--navy-900);
+  --color-navy-800: var(--navy-800);
+  --color-navy-700: var(--navy-700);
+  --color-navy-600: var(--navy-600);
+  --color-navy-500: var(--navy-500);
+  --color-cyan-500: var(--cyan-500);
+  --color-cyan-400: var(--cyan-400);
+  --color-cyan-300: var(--cyan-300);
+  --color-cyan-50:  var(--cyan-50);
+  --color-amber-500: var(--amber-500);
+  --color-amber-400: var(--amber-400);
+  --color-amber-300: var(--amber-300);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-soft: var(--soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --font-display: "Cabinet Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+* { border-color: var(--line); }
+
+html, body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Long display headlines must never clip or horizontally overflow on narrow
+   screens. `overflow-wrap: anywhere` forces long compound words to break
+   rather than shoot past the viewport; `text-wrap: pretty` avoids orphans
+   without the balance side-effect of forcing single long words onto their
+   own line. `hyphens: auto` lets browsers insert a soft hyphen if a word
+   really cannot fit. */
+h1, h2, h3, blockquote {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+h1.font-display, h2.font-display, h3.font-display {
+  text-wrap: pretty;
+}
+
+/* Safety net: nothing in the page tree should ever push the document wider
+   than the viewport. `max-width: 100%` on replaced elements + a root
+   `overflow-x: clip` handle rogue absolute-positioned decorations. */
+html { overflow-x: clip; }
+img, svg, video, canvas { max-width: 100%; height: auto; }
+
+::selection { background: var(--amber-500); color: #fff; }
+
+.font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+.font-mono    { font-family: var(--font-mono); }
+
+/* Signature gradient lifted straight off the logo play-button */
+.brand-gradient {
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-600) 45%, var(--cyan-500) 100%);
+}
+.text-brand-gradient {
+  background: linear-gradient(135deg, var(--navy-800), var(--cyan-500) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-amber-gradient {
+  background: linear-gradient(90deg, var(--amber-500), var(--amber-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft dotted grid for light backgrounds */
+.dotted {
+  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Glow halos used behind hero and feature blocks */
+.halo-cyan::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(40% 40% at 20% 30%, rgba(31, 185, 220, 0.35), transparent 70%),
+              radial-gradient(35% 35% at 80% 70%, rgba(245, 146, 66, 0.22), transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+}
+
+.ring-line { box-shadow: inset 0 0 0 1px var(--line-strong); }
+.shadow-soft { box-shadow: 0 1px 2px rgba(10, 24, 56, 0.04), 0 12px 32px -12px rgba(10, 24, 56, 0.12); }
+.shadow-brand { box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 18px 40px -12px rgba(11, 37, 85, 0.45); }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee 44s linear infinite; display: inline-flex; white-space: nowrap; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@keyframes pulse-dot { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+.link-underline {
+  background-image: linear-gradient(to right, currentColor 0, currentColor 100%);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  transition: background-size 0.4s ease;
+}
+.link-underline:hover { background-size: 100% 1px; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; }

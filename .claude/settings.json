@@ -1,0 +1,51 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/introspect-schema.mjs)",
+      "Bash(node -e ' *)",
+      "Bash(node scripts/generate-types.mjs)",
+      "Bash(rm -f tailwind.config.ts components.json components/ui/button.tsx components/ui/card.tsx)",
+      "Bash(rmdir components/ui)",
+      "Bash(cp \"c:/Users/Aditya Gupta/Desktop/primeengage/components/ui.tsx\" \"c:/Users/Aditya Gupta/Desktop/amb-primeengage/components/ui.tsx\")",
+      "Bash(cp \"c:/Users/Aditya Gupta/Desktop/primeengage/components/admin/table.tsx\" \"c:/Users/Aditya Gupta/Desktop/amb-primeengage/components/admin/table.tsx\")",
+      "Bash(cp \"c:/Users/Aditya Gupta/Desktop/primeengage/components/logo.tsx\" \"c:/Users/Aditya Gupta/Desktop/amb-primeengage/components/logo.tsx\")",
+      "Bash(tee /tmp/dev.log)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} time=%{time_total}s\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} time=%{time_total}s\\\\n\" http://localhost:3000/login)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/admin/applications)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/dashboard)",
+      "Bash(tee /tmp/dev2.log)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/admin/applications/abc)",
+      "Bash(curl -s -X POST http://localhost:3000/api/admin/applications/abc/approve -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -X POST http://localhost:3000/api/admin/applications/abc/reject -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code}\\\\n\" http://localhost:3000/api/admin/applications/abc/approve)",
+      "Bash(tee /tmp/dev3.log)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/admin/activities)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/admin/activities/new)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/admin/activities/abc)",
+      "Bash(tee /tmp/dev4.log)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/dashboard/activities)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3000/dashboard/activities/abc)",
+      "Bash(curl -s -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3000/api/dashboard/submissions/sign-upload -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3000/api/dashboard/submissions -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3001/api/dashboard/submissions/sign-upload -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -X POST -H 'Content-Type: application/json' -d '{}' http://localhost:3001/api/dashboard/submissions -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(tee /tmp/dev5.log)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3001/admin/activities/abc/submissions)",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3001/admin/submissions/abc)",
+      "Bash(curl -s -X POST -H 'Content-Type: application/json' -d '{\"points\":50}' http://localhost:3001/api/admin/submissions/abc/award -w \"\\\\nHTTP %{http_code}\\\\n\")",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} location=%{redirect_url}\\\\n\" http://localhost:3001/dashboard)",
+      "Bash(tee /tmp/dev6.log)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/events)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/events/new)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/events/abc)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/gallery)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/gallery/new)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\public",
+      "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\app",
+      "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\supabase"
+    ]
+  }
+}
