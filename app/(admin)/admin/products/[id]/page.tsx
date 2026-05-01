@@ -87,7 +87,7 @@ export default async function AdminProductDetailPage({
           <Card title="Lifecycle">
             <ProductArchiveButton id={product.id} isActive={product.is_active} />
             <p className="mt-3 text-[12.5px] text-mute leading-relaxed">
-              Archiving hides the product from the ambassador store. Existing
+              Archiving hides the product from the Yuvaah store. Existing
               orders are unaffected.
             </p>
           </Card>

@@ -100,7 +100,7 @@ export default async function AdminLayout({
                 Prime Engage
               </Link>
               <span className="mx-2">/</span>
-              <span className="text-navy-900 font-semibold">Ambassador admin</span>
+              <span className="text-navy-900 font-semibold">admin</span>
             </div>
             <div className="flex items-center gap-3">
               <button className="p-2 rounded-lg hover:bg-paper-2 text-mute">

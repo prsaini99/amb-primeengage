@@ -101,7 +101,7 @@ export async function requireAmbassadorForApi(): Promise<RequireAmbassadorApiRes
     return {
       ok: false,
       response: Response.json(
-        { error: "Ambassador role required." },
+        { error: "Yuvaah Club role required." },
         { status: 403 },
       ),
     };

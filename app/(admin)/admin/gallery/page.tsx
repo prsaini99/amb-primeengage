@@ -31,7 +31,7 @@ export default async function AdminGalleryPage() {
     <>
       <PageHeading
         title="Gallery"
-        subtitle="Images visible to all approved ambassadors."
+        subtitle="Images visible to all approved Yuvaah Club members."
         actions={
           <Link
             href="/admin/gallery/new"

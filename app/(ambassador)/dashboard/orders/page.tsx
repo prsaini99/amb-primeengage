@@ -5,7 +5,7 @@ import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "My orders · Ambassador" };
+export const metadata = { title: "My orders · Yuvaah" };
 
 function fulfillmentTone(s: string):
   | { tone: "success" | "warn" | "danger" | "info"; label: string } {

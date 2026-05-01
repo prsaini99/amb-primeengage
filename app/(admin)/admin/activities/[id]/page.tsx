@@ -98,7 +98,7 @@ export default async function ActivityDetailPage({
           <Card title="Lifecycle">
             <ActivityArchiveButton id={activity.id} isActive={activity.is_active} />
             <p className="mt-3 text-[12.5px] text-mute leading-relaxed">
-              Archiving hides the activity from ambassadors and blocks new
+              Archiving hides the activity from Yuvaah Club members and blocks new
               submissions at the database level (BEFORE INSERT trigger). Existing
               submissions stay visible in admin.
             </p>

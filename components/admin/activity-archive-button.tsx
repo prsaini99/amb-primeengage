@@ -22,7 +22,7 @@ export function ActivityArchiveButton({
     if (
       !window.confirm(
         isActive
-          ? "Archive this activity? Ambassadors will not see it and the trigger will reject any new submissions."
+          ? "Archive this activity? Yuvaah Club members will not see it and the trigger will reject any new submissions."
           : "Reactivate this activity?",
       )
     ) {

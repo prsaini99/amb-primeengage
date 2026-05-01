@@ -20,7 +20,7 @@ export default function NewEventPage() {
           New event
         </h1>
         <p className="text-[13.5px] text-mute mt-1">
-          Visible to all approved ambassadors as soon as it's saved.
+          Visible to all approved Yuvaah Club members as soon as it's saved.
         </p>
       </div>
 

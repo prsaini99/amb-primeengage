@@ -36,7 +36,7 @@ export function OrderActions({
     if (action === "cancel") {
       if (
         !window.confirm(
-          "Cancel this order? Points are refunded to the ambassador if it was a pure-points order. Money refunds for hybrid orders must be issued manually via the Razorpay dashboard — record the refund ID in the notes.",
+          "Cancel this order? Points are refunded to the Yuvaah Club member if it was a pure-points order. Money refunds for hybrid orders must be issued manually via the Razorpay dashboard — record the refund ID in the notes.",
         )
       ) {
         return;
@@ -100,7 +100,7 @@ export function OrderActions({
           className="w-full mt-2 rounded-xl bg-paper ring-1 ring-line px-4 py-3 text-[13.5px] focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50 resize-y"
         />
         <span className="text-[12px] text-mute mt-1.5 block">
-          Visible to the ambassador on their order card after you save.
+          Visible to the Yuvaah Club member on their order card after you save.
         </span>
       </label>
 

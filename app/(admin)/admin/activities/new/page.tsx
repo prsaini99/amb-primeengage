@@ -20,8 +20,8 @@ export default function NewActivityPage() {
           New activity
         </h1>
         <p className="text-[13.5px] text-mute mt-1">
-          Ambassadors will see this in their dashboard once it's saved and the
-          deadline is in the future.
+          Yuvaah Club members will see this in their dashboard once it's saved
+          and the deadline is in the future.
         </p>
       </div>
 

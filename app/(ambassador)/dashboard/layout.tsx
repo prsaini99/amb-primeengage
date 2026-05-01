@@ -56,7 +56,7 @@ export default async function DashboardLayout({
                   {displayName || profile.email}
                 </div>
                 <div className="text-[11px] text-mute truncate">
-                  Ambassador
+                  Yuvaah Club
                 </div>
               </div>
               <button
@@ -79,7 +79,7 @@ export default async function DashboardLayout({
                 Prime Engage
               </Link>
               <span className="mx-2">/</span>
-              <span className="text-navy-900 font-semibold">Ambassador Club</span>
+              <span className="text-navy-900 font-semibold">Yuvaah Club</span>
             </div>
             <div className="flex items-center gap-3">
               <button className="p-2 rounded-lg hover:bg-paper-2 text-mute">

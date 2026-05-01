@@ -75,7 +75,7 @@ export function AdminChatList({
           <li className="px-4 py-8 text-[13px] text-mute text-center">
             {query
               ? "No matches."
-              : "No approved ambassadors yet."}
+              : "No approved Yuvaah Club members yet."}
           </li>
         )}
         {filtered.map((r) => {

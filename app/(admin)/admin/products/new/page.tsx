@@ -20,7 +20,7 @@ export default function NewProductPage() {
           New product
         </h1>
         <p className="text-[13.5px] text-mute mt-1">
-          Visible to ambassadors as soon as it's saved (unless archived).
+          Visible to Yuvaah Club members as soon as it's saved (unless archived).
         </p>
       </div>
 

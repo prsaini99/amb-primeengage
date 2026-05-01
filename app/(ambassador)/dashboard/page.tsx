@@ -6,7 +6,7 @@ import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Dashboard · Ambassador" };
+export const metadata = { title: "Dashboard · Yuvaah" };
 
 const LEADERBOARD_TOP_N = 3;
 const RECENT_ACTIVITY_LIMIT = 6;

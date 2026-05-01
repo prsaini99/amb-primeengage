@@ -42,7 +42,7 @@ export async function POST(
   }
   if (profile.role !== "ambassador") {
     return Response.json(
-      { error: "Only ambassador applications can be rejected." },
+      { error: "Only Yuvaah Club applications can be rejected." },
       { status: 422 },
     );
   }

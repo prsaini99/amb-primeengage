@@ -5,7 +5,7 @@ import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Store · Ambassador" };
+export const metadata = { title: "Store · Yuvaah" };
 
 type TypeFilter = "all" | "merchandise" | "voucher" | "affordable";
 

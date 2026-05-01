@@ -4,7 +4,7 @@ import { getAdminProfile } from "@/lib/auth/get-admin-profile";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Chat · Ambassador" };
+export const metadata = { title: "Chat · Yuvaah" };
 
 export default async function AmbassadorChatPage() {
   const { profileId } = await requireAmbassador();

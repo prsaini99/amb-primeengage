@@ -142,13 +142,13 @@ async function isPairingAllowed(
     return { ok: false, error: "Other party not found.", status: 404 };
   }
   if (callerRole === "ambassador" && other.role !== "admin") {
-    return { ok: false, error: "Ambassadors can only chat with the admin.", status: 403 };
+    return { ok: false, error: "Yuvaah Club members can only chat with the admin.", status: 403 };
   }
   if (callerRole === "admin" && other.role !== "ambassador") {
-    return { ok: false, error: "Admin can only chat with ambassadors.", status: 403 };
+    return { ok: false, error: "Admin can only chat with Yuvaah Club members.", status: 403 };
   }
   if (callerRole === "admin" && other.status !== "approved") {
-    return { ok: false, error: "Ambassador is not active.", status: 403 };
+    return { ok: false, error: "Yuvaah Club member is not active.", status: 403 };
   }
   return { ok: true };
 }

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 
 import { LoginForm } from "./login-form";
 
-export const metadata = { title: "Sign in · Ambassador Platform" };
+export const metadata = { title: "Sign in · Yuvaah Platform" };
 export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
@@ -31,7 +31,7 @@ export default async function LoginPage() {
 
         <div className="mt-8 rounded-[28px] bg-paper-2 ring-1 ring-line p-7 md:p-10 shadow-soft">
           <h1 className="font-display text-3xl font-bold text-navy-900">
-            Ambassador Platform
+            Yuvaah Platform
           </h1>
           <p className="text-[13.5px] text-mute mt-1">
             Sign in with the credentials sent to your email after approval. Admins,

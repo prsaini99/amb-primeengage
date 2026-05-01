@@ -44,7 +44,7 @@ export default async function ActivitiesPage() {
     <>
       <PageHeading
         title="Activities"
-        subtitle="Tasks ambassadors can complete to earn points."
+        subtitle="Tasks Yuvaah Club members can complete to earn points."
         actions={
           <Link
             href="/admin/activities/new"

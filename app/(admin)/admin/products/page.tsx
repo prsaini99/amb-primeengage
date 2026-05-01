@@ -44,7 +44,7 @@ export default async function AdminProductsPage({
     <>
       <PageHeading
         title="Products"
-        subtitle="Items ambassadors can redeem with points (and / or money in Phase 3)."
+        subtitle="Items Yuvaah Club members can redeem with points (and / or money in Phase 3)."
         actions={
           <Link
             href="/admin/products/new"

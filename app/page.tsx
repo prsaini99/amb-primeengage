@@ -13,11 +13,11 @@ export default function HomePage() {
       <section className="flex-1 grid place-items-center">
         <div className="mx-auto max-w-[640px] px-6 text-center">
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[12px] font-medium tracking-wide bg-cyan-50 text-navy-800 ring-1 ring-cyan-300/60">
-            Ambassador Platform
+            Yuvaah Platform
           </span>
           <h1 className="font-display text-4xl md:text-5xl font-semibold text-navy-900 mt-5 leading-[1.05]">
             <span className="text-brand-gradient">Operational dashboard</span>
-            <br /> for the Ambassador Club
+            <br /> for the Yuvaah Club
           </h1>
           <p className="mt-5 text-[16px] leading-relaxed text-mute">
             Public applications happen on the marketing site. This is where the

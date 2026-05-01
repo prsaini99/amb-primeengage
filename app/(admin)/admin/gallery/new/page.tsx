@@ -19,7 +19,7 @@ export default function NewGalleryUploadPage() {
           Upload image
         </h1>
         <p className="text-[13.5px] text-mute mt-1">
-          Visible to all approved ambassadors as soon as it's uploaded.
+          Visible to all approved Yuvaah Club members as soon as it's uploaded.
         </p>
       </div>
 

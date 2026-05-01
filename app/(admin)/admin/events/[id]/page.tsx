@@ -70,7 +70,7 @@ export default async function EventDetailPage({
             </h3>
             <DangerDeleteButton
               action={deleteAction}
-              confirmMessage="Delete this event permanently? Ambassadors will no longer see it."
+              confirmMessage="Delete this event permanently? Yuvaah Club members will no longer see it."
               label="Delete event"
               busyLabel="Deleting…"
               redirectTo="/admin/events"

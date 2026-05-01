@@ -118,7 +118,7 @@ export default async function AdminSubmissionDetailPage({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <section className="lg:col-span-2 space-y-6">
-          <Card title="Ambassador">
+          <Card title="Member">
             <KV
               label="Name"
               value={`${profile.first_name} ${profile.last_name}`}
@@ -192,7 +192,7 @@ export default async function AdminSubmissionDetailPage({
                 defaultPoints={activity.points}
               />
               <p className="mt-4 text-[12.5px] text-mute leading-relaxed">
-                Awarding writes the ledger entry and emails the ambassador.
+                Awarding writes the ledger entry and emails the Yuvaah Club member.
                 One-shot — the form disappears once awarded.
               </p>
             </Card>

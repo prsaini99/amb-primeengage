@@ -21,7 +21,7 @@ export function ProductArchiveButton({
     if (
       !window.confirm(
         isActive
-          ? "Archive this product? Ambassadors will not see it in the store. Existing orders are unaffected."
+          ? "Archive this product? Yuvaah Club members will not see it in the store. Existing orders are unaffected."
           : "Reactivate this product?",
       )
     ) {

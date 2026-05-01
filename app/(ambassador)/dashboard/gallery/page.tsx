@@ -2,7 +2,7 @@ import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Gallery · Ambassador" };
+export const metadata = { title: "Gallery · Yuvaah" };
 
 export default async function AmbassadorGalleryPage() {
   await requireAmbassador();
@@ -20,7 +20,7 @@ export default async function AmbassadorGalleryPage() {
           Gallery
         </h1>
         <p className="text-[13.5px] text-mute mt-1">
-          Highlights from the Ambassador Club.
+          Highlights from the Yuvaah Club.
         </p>
       </div>
 

@@ -109,7 +109,7 @@ export default async function AdminOrdersPage({
         <thead>
           <tr>
             <Th>Placed</Th>
-            <Th>Ambassador</Th>
+            <Th>Member</Th>
             <Th>Product</Th>
             <Th>Points</Th>
             <Th>INR</Th>

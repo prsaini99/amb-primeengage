@@ -75,7 +75,7 @@ export default async function ApplicationsPage({
     <>
       <PageHeading
         title="Applications"
-        subtitle="Ambassador Club applications submitted via the marketing site."
+        subtitle="Yuvaah Club applications submitted via the marketing site."
       />
 
       <FilterBar>

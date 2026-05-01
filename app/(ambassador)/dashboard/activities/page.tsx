@@ -5,7 +5,7 @@ import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Activities · Ambassador" };
+export const metadata = { title: "Activities · Yuvaah" };
 
 type SubmissionState = "open" | "closed" | "submitted" | "awarded";
 

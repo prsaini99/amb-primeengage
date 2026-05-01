@@ -122,7 +122,7 @@ export function ProductForm(props: Mode) {
 
       <Field
         label="Stock"
-        hint="Leave blank for unlimited stock. Typing 0 means out of stock — ambassadors won't be able to redeem."
+        hint="Leave blank for unlimited stock. Typing 0 means out of stock — Yuvaah Club members won't be able to redeem."
       >
         <input
           name="stock"

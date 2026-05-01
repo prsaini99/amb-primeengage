@@ -54,10 +54,10 @@ export async function sendApprovalEmail(a: ApprovedAmbassador): Promise<void> {
   if (!t) return;
 
   const loginUrl = `${appUrl()}/login`;
-  const subject = "You're in — Prime Engage Ambassador Club";
+  const subject = "You're in — Prime Engage Yuvaah Club";
   const text = `Hi ${a.first_name},
 
-Welcome to the Prime Engage Ambassador Club! Your application has been approved.
+Welcome to the Prime Engage Yuvaah Club! Your application has been approved.
 
 Your sign-in credentials:
 
@@ -72,10 +72,10 @@ Team Prime Engage
 hello@primeengage.in`;
 
   const html = baseHtml({
-    preheader: "Your Ambassador Club application has been approved.",
+    preheader: "Your Yuvaah Club application has been approved.",
     title: `Welcome aboard, ${escape(a.first_name)}`,
     body: `
-      <p>Your application to the <strong>Prime Engage Ambassador Club</strong> has been approved. Use the credentials below to sign in.</p>
+      <p>Your application to the <strong>Prime Engage Yuvaah Club</strong> has been approved. Use the credentials below to sign in.</p>
       <div style="margin-top:22px;background:#F8F6EF;border:1px solid rgba(10,24,56,0.08);border-radius:12px;padding:18px">
         ${kv("Email", a.email)}
         ${kv("Password", `<code style="font-family:'JetBrains Mono',ui-monospace,monospace;background:#fff;padding:2px 6px;border-radius:4px">${escape(a.password)}</code>`)}
@@ -99,10 +99,10 @@ export async function sendRejectionEmail(a: RejectedApplicant): Promise<void> {
   const t = transporter();
   if (!t) return;
 
-  const subject = "Update on your Ambassador Club application";
+  const subject = "Update on your Yuvaah Club application";
   const text = `Hi ${a.first_name},
 
-Thank you for applying to the Prime Engage Ambassador Club. We received an enormous number of strong applications this season and unfortunately could not offer you a place in this cohort.
+Thank you for applying to the Prime Engage Yuvaah Club. We received an enormous number of strong applications this season and unfortunately could not offer you a place in this cohort.
 
 This is not a reflection on your potential — campus programs at this scale come down to a very narrow fit on profile, region, and interest mix. We'd genuinely encourage you to apply again when we open the next cohort.
 
@@ -111,10 +111,10 @@ Team Prime Engage
 hello@primeengage.in`;
 
   const html = baseHtml({
-    preheader: "An update on your Ambassador Club application.",
+    preheader: "An update on your Yuvaah Club application.",
     title: `Hi ${escape(a.first_name)}, an update on your application`,
     body: `
-      <p>Thank you for applying to the <strong>Prime Engage Ambassador Club</strong>. We received an enormous number of strong applications this season and unfortunately could not offer you a place in this cohort.</p>
+      <p>Thank you for applying to the <strong>Prime Engage Yuvaah Club</strong>. We received an enormous number of strong applications this season and unfortunately could not offer you a place in this cohort.</p>
       <p style="margin-top:18px">This is not a reflection on your potential &mdash; campus programs at this scale come down to a very narrow fit on profile, region, and interest mix. We'd genuinely encourage you to apply again when we open the next cohort.</p>
       <p style="margin-top:22px;color:#5A6686;font-size:13px">If you have any questions, just reply to this email.</p>
     `,
@@ -209,7 +209,7 @@ function baseHtml({
       <tr><td style="padding:0">
         <div style="background:linear-gradient(135deg,#061736,#163F8C 50%,#1FB9DC);padding:28px 32px;color:#fff">
           <div style="font-family:'Cabinet Grotesk',Inter,sans-serif;font-weight:700;font-size:18px;letter-spacing:-0.01em">Prime <span style="color:#9BE7F5">Engage</span></div>
-          <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#9BE7F5;margin-top:4px">Ambassador Club</div>
+          <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#9BE7F5;margin-top:4px">Yuvaah Club</div>
         </div>
       </td></tr>
       <tr><td style="padding:32px">

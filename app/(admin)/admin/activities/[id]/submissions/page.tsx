@@ -73,7 +73,7 @@ export default async function ActivitySubmissionsPage({
         <thead>
           <tr>
             <Th>Submitted</Th>
-            <Th>Ambassador</Th>
+            <Th>Member</Th>
             <Th>Files</Th>
             <Th>Status</Th>
             <Th>Awarded</Th>

@@ -184,11 +184,11 @@ function EmptyChatState({ hasAny }: { hasAny: boolean }) {
         <MessageSquare size={22} className="text-mute" />
       </div>
       <p className="text-[14px] text-navy-900 font-semibold">
-        {hasAny ? "Pick a conversation" : "No ambassadors yet"}
+        {hasAny ? "Pick a conversation" : "No Yuvaah Club members yet"}
       </p>
       <p className="text-[13px] text-mute mt-1 max-w-xs">
         {hasAny
-          ? "Choose an ambassador from the left to view messages and reply."
+          ? "Choose a member from the left to view messages and reply."
           : "Approve some applications to start chatting."}
       </p>
     </div>

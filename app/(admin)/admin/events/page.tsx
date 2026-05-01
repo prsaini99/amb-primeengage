@@ -35,7 +35,7 @@ export default async function AdminEventsPage() {
     <>
       <PageHeading
         title="Events"
-        subtitle="Posts ambassadors see in their dashboard."
+        subtitle="Posts Yuvaah Club members see in their dashboard."
         actions={
           <Link
             href="/admin/events/new"

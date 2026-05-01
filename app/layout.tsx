@@ -14,9 +14,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ambassador Platform · Prime Engage",
+  title: "Yuvaah Platform · Prime Engage",
   description:
-    "Operational dashboard for the Prime Engage Ambassador Club — admin and ambassador tooling.",
+    "Operational dashboard for the Prime Engage Yuvaah Club — admin and member tooling.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   robots: { index: false, follow: false },
 };

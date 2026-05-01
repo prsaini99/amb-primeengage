@@ -109,7 +109,7 @@ export default async function AdminOrderDetailPage({
             </div>
           </Card>
 
-          <Card title="Ambassador">
+          <Card title="Member">
             <KV label="Name" value={`${profile.first_name} ${profile.last_name}`} />
             <KV label="Email" value={profile.email} mono />
           </Card>
@@ -174,7 +174,7 @@ export default async function AdminOrderDetailPage({
             {!closed && (
               <p className="mt-4 text-[12px] text-mute leading-relaxed">
                 For vouchers, paste the code into notes and click Save — the
-                ambassador sees it on their order card. For merchandise,
+                Yuvaah Club member sees it on their order card. For merchandise,
                 tracking numbers / shipping notes work the same way. Cancel +
                 refund handles returns and error correction.
               </p>

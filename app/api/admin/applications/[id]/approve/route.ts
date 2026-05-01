@@ -57,7 +57,7 @@ export async function POST(
   }
   if (profile.role !== "ambassador") {
     return Response.json(
-      { error: "Only ambassador applications can be approved." },
+      { error: "Only Yuvaah Club applications can be approved." },
       { status: 422 },
     );
   }
