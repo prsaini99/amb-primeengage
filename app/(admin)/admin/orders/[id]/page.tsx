@@ -25,7 +25,7 @@ export default async function AdminOrderDetailPage({
   const { data: order } = await sb
     .from("amb_orders")
     .select(
-      "id, user_id, product_id, points_used, inr_paid, payment_status, fulfillment_status, payment_ref, admin_notes, created_at",
+      "id, user_id, product_id, points_used, inr_paid, payment_status, fulfillment_status, payment_ref, razorpay_order_id, admin_notes, created_at",
     )
     .eq("id", id)
     .maybeSingle();
@@ -48,9 +48,9 @@ export default async function AdminOrderDetailPage({
   const product = productRes.data;
   if (!profile || !product) notFound();
 
-  const closed =
-    order.fulfillment_status === "fulfilled" ||
-    order.fulfillment_status === "cancelled";
+  // After Phase 3, only cancelled orders are read-only. Fulfilled orders
+  // still allow notes editing and cancel-with-refund (return / error case).
+  const closed = order.fulfillment_status === "cancelled";
 
   return (
     <div className="space-y-6">
@@ -133,25 +133,27 @@ export default async function AdminOrderDetailPage({
               }
               mono
             />
-            {order.payment_ref && (
-              <KV label="Payment ref" value={order.payment_ref} mono />
+            {order.razorpay_order_id && (
+              <KV
+                label="Razorpay order id"
+                value={order.razorpay_order_id}
+                mono
+              />
             )}
+            {order.payment_ref && (
+              <KV label="Payment id" value={order.payment_ref} mono />
+            )}
+            <KV label="Internal id" value={order.id} mono />
           </Card>
         </section>
 
         <aside>
-          <Card
-            title={
-              closed ? "Recorded notes" : `Fulfill or cancel`
-            }
-          >
+          <Card title={closed ? "Cancelled" : "Manage order"}>
             {closed ? (
               <>
                 <p className="text-[13px] text-mute mb-3">
-                  This order is{" "}
-                  <strong>{order.fulfillment_status}</strong>. The notes below
-                  are read-only here. Re-open it from the database directly if
-                  you need to amend (rare).
+                  This order is <strong>cancelled</strong>. The notes below
+                  are read-only here.
                 </p>
                 {order.admin_notes ? (
                   <div className="rounded-lg bg-paper ring-1 ring-line px-3 py-2 text-[13px] text-ink whitespace-pre-wrap">
@@ -171,9 +173,10 @@ export default async function AdminOrderDetailPage({
             )}
             {!closed && (
               <p className="mt-4 text-[12px] text-mute leading-relaxed">
-                For vouchers, paste the code here before clicking Fulfill —
-                the ambassador will see it on their order page. For merchandise,
-                tracking numbers / shipping notes work the same way.
+                For vouchers, paste the code into notes and click Save — the
+                ambassador sees it on their order card. For merchandise,
+                tracking numbers / shipping notes work the same way. Cancel +
+                refund handles returns and error correction.
               </p>
             )}
           </Card>

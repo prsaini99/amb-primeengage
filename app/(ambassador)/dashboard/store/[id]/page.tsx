@@ -3,11 +3,13 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { Badge, inr } from "@/components/admin/table";
-import { RedeemButton } from "@/components/dashboard/redeem-button";
+import { RedemptionPanel } from "@/components/dashboard/redemption-panel";
 import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
+
+const DEFAULT_RATE = 0.10;
 
 export default async function StoreProductDetailPage({
   params,
@@ -18,7 +20,7 @@ export default async function StoreProductDetailPage({
   const { profileId } = await requireAmbassador();
   const sb = createAdminClient();
 
-  const [productRes, balRes] = await Promise.all([
+  const [productRes, balRes, rateRes] = await Promise.all([
     sb
       .from("amb_products")
       .select("id, type, name, description, image_url, points_cost, inr_cost, stock, is_active")
@@ -29,6 +31,11 @@ export default async function StoreProductDetailPage({
       .select("balance")
       .eq("user_id", profileId)
       .maybeSingle(),
+    sb
+      .from("amb_settings")
+      .select("value")
+      .eq("key", "points_to_inr_rate")
+      .maybeSingle(),
   ]);
 
   const product = productRes.data;
@@ -36,9 +43,14 @@ export default async function StoreProductDetailPage({
 
   const balance = balRes.data?.balance ?? 0;
   const inrCost = Number(product.inr_cost);
+  const rateRaw = rateRes.data?.value;
+  const rate =
+    typeof rateRaw === "number"
+      ? rateRaw
+      : Number(rateRaw ?? DEFAULT_RATE) || DEFAULT_RATE;
+
   const outOfStock = product.stock !== null && product.stock <= 0;
-  const cantAfford = inrCost === 0 && product.points_cost > balance;
-  const moneyRequired = inrCost > 0;
+  const moneyRequired = inrCost > 0; // intrinsic-INR products still gated
 
   let disabled = false;
   let disabledReason: string | undefined;
@@ -47,10 +59,7 @@ export default async function StoreProductDetailPage({
     disabledReason = "Out of stock";
   } else if (moneyRequired) {
     disabled = true;
-    disabledReason = "Money payments coming in Phase 3";
-  } else if (cantAfford) {
-    disabled = true;
-    disabledReason = `Need ${product.points_cost - balance} more points`;
+    disabledReason = "Money-priced products not yet supported";
   }
 
   return (
@@ -104,29 +113,26 @@ export default async function StoreProductDetailPage({
               )}
             </div>
             <div className="mt-3 text-[12.5px] text-mute">
-              Your balance:{" "}
-              <span className="font-semibold text-navy-900">{balance}</span> points
-              {product.stock !== null && (
-                <>
-                  {" · "}
-                  <span>{product.stock} in stock</span>
-                </>
-              )}
+              {product.stock !== null && <span>{product.stock} in stock</span>}
             </div>
           </div>
 
-          <RedeemButton
+          <RedemptionPanel
             productId={product.id}
             productName={product.name}
             pointsCost={product.points_cost}
+            balance={balance}
+            rate={rate}
             disabled={disabled}
             disabledReason={disabledReason}
           />
 
           <p className="text-[12px] text-mute leading-relaxed">
-            On redemption, points are debited and your order is placed in the
-            queue. Admin fulfills manually — for vouchers, the code lands in
-            your order details. For merchandise, watch for shipping updates.
+            Drag the slider to choose how many of your points to spend; the
+            rest auto-bills as INR via Razorpay. Redemptions complete
+            instantly. For vouchers, admin sends the code via chat — it'll
+            appear in your order's notes once delivered. For merchandise,
+            watch for shipping updates.
           </p>
         </div>
       </div>

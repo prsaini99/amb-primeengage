@@ -27,6 +27,14 @@ means another `node.exe` from a previous session is still alive — kill it
 via Task Manager BEFORE deleting `.next/` or starting a new one. Pattern:
 (1) Ctrl+C the dev server, (2) confirm no `node.exe` lingers, (3) delete
 `.next/`, (4) `npm run dev`.
+
+**Before any `rm -rf .next` (or `Remove-Item .next`):** run `tasklist |
+grep -i node` (or check Task Manager) to confirm no node process is alive.
+If any are, ask the user to Ctrl+C their dev server first. The instinct to
+delete the stale type cache after removing a route file is correct, but
+doing it concurrently with a running dev server has cost a debugging
+session three times now. No exceptions — even if you "just rebuilt" and
+think you stopped the server, verify.
 <!-- END:nextjs-agent-rules -->
 
 ## Companion repo

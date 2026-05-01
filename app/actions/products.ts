@@ -14,7 +14,9 @@ const IMAGE_BUCKET = "amb_products";
 const IMAGE_MAX_BYTES = 5 * 1024 * 1024;
 const IMAGE_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
 
-export type ProductFormResult = { ok: false; error: string };
+export type ProductFormResult =
+  | { ok: false; error: string }
+  | { ok: true };
 
 // ---------- create -----------------------------------------------------------
 
@@ -56,7 +58,9 @@ export async function createProduct(
   }
 
   revalidatePath("/admin/products");
-  redirect(`/admin/products/${data.id}`);
+  // Land on the list — admin sees the new row at the top alongside everything
+  // else. If they want to edit, they click in.
+  redirect("/admin/products");
 }
 
 // ---------- update -----------------------------------------------------------
@@ -96,7 +100,7 @@ export async function updateProduct(
 
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}`);
-  return null;
+  return { ok: true };
 }
 
 // ---------- archive / unarchive ---------------------------------------------
@@ -119,6 +123,7 @@ export async function setProductActive(id: string, isActive: boolean) {
 
 // ---------- helpers ---------------------------------------------------------
 
+type ParseError = { ok: false; error: string };
 type ParsedProduct =
   | {
       ok: true;
@@ -130,7 +135,7 @@ type ParsedProduct =
       stock: number | null;
       image: File | null;
     }
-  | ProductFormResult;
+  | ParseError;
 
 function parseProductForm(formData: FormData): ParsedProduct {
   const typeRaw = String(formData.get("type") ?? "");
@@ -197,7 +202,7 @@ function parseProductForm(formData: FormData): ParsedProduct {
 async function uploadImage(
   sb: ReturnType<typeof createAdminClient>,
   file: File,
-): Promise<{ ok: true; publicUrl: string } | ProductFormResult> {
+): Promise<{ ok: true; publicUrl: string } | ParseError> {
   const ext =
     file.name.split(".").pop()?.toLowerCase() ??
     (file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg");

@@ -14,7 +14,9 @@ const COVER_BUCKET = "amb_activities";
 const COVER_MAX_BYTES = 5 * 1024 * 1024;
 const COVER_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
 
-export type ActivityFormResult = { ok: false; error: string };
+export type ActivityFormResult =
+  | { ok: false; error: string }
+  | { ok: true };
 
 // ---------- create -----------------------------------------------------------
 
@@ -56,7 +58,7 @@ export async function createActivity(
   }
 
   revalidatePath("/admin/activities");
-  redirect(`/admin/activities/${data.id}`);
+  redirect("/admin/activities");
 }
 
 // ---------- update -----------------------------------------------------------
@@ -98,7 +100,7 @@ export async function updateActivity(
 
   revalidatePath("/admin/activities");
   revalidatePath(`/admin/activities/${id}`);
-  return null; // caller refreshes via router; useActionState clears the error
+  return { ok: true };
 }
 
 // ---------- archive / unarchive ---------------------------------------------
@@ -121,6 +123,7 @@ export async function setActivityActive(id: string, isActive: boolean) {
 
 // ---------- helpers ---------------------------------------------------------
 
+type ParseError = { ok: false; error: string };
 type ParsedActivity =
   | {
       ok: true;
@@ -130,7 +133,7 @@ type ParsedActivity =
       deadline: string; // ISO with TZ
       cover: File | null;
     }
-  | ActivityFormResult;
+  | ParseError;
 
 function parseActivityForm(formData: FormData): ParsedActivity {
   const title = String(formData.get("title") ?? "").trim();
@@ -188,7 +191,7 @@ function parseActivityForm(formData: FormData): ParsedActivity {
 async function uploadCover(
   sb: ReturnType<typeof createAdminClient>,
   file: File,
-): Promise<{ ok: true; publicUrl: string } | ActivityFormResult> {
+): Promise<{ ok: true; publicUrl: string } | ParseError> {
   const ext =
     file.name.split(".").pop()?.toLowerCase() ??
     (file.type === "image/png"

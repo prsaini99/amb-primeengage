@@ -14,7 +14,9 @@ const COVER_BUCKET = "amb_events";
 const COVER_MAX_BYTES = 5 * 1024 * 1024;
 const COVER_MIME = ["image/jpeg", "image/png", "image/webp"] as const;
 
-export type EventFormResult = { ok: false; error: string };
+export type EventFormResult =
+  | { ok: false; error: string }
+  | { ok: true };
 
 // ---------- create -----------------------------------------------------------
 
@@ -54,7 +56,7 @@ export async function createEvent(
 
   revalidatePath("/admin/events");
   revalidatePath("/dashboard/events");
-  redirect(`/admin/events/${data.id}`);
+  redirect("/admin/events");
 }
 
 // ---------- update -----------------------------------------------------------
@@ -91,7 +93,7 @@ export async function updateEvent(
   revalidatePath("/admin/events");
   revalidatePath(`/admin/events/${id}`);
   revalidatePath("/dashboard/events");
-  return null;
+  return { ok: true };
 }
 
 // ---------- delete -----------------------------------------------------------
@@ -111,9 +113,10 @@ export async function deleteEvent(id: string) {
 
 // ---------- helpers ---------------------------------------------------------
 
+type ParseError = { ok: false; error: string };
 type ParsedEvent =
   | { ok: true; title: string; body: string; cover: File | null }
-  | EventFormResult;
+  | ParseError;
 
 function parseEventForm(formData: FormData): ParsedEvent {
   const title = String(formData.get("title") ?? "").trim();
@@ -144,7 +147,7 @@ function parseEventForm(formData: FormData): ParsedEvent {
 async function uploadCover(
   sb: ReturnType<typeof createAdminClient>,
   file: File,
-): Promise<{ ok: true; publicUrl: string } | EventFormResult> {
+): Promise<{ ok: true; publicUrl: string } | ParseError> {
   const ext =
     file.name.split(".").pop()?.toLowerCase() ??
     (file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg");

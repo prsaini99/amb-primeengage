@@ -40,12 +40,14 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/events/new)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/events/abc)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/gallery)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/gallery/new)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{redirect_url}\\\\n\" http://localhost:3001/admin/gallery/new)",
+      "Bash(npm view *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\public",
       "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\app",
-      "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\supabase"
+      "c:\\Users\\Aditya Gupta\\Desktop\\primeengage\\supabase",
+      "c:\\Users\\Aditya Gupta\\Desktop\\amb-primeengage\\app\\api\\admin\\orders\\[id]\\fulfill"
     ]
   }
 }

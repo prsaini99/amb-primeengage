@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, Check, Save } from "lucide-react";
 
 import type { ProductFormResult } from "@/app/actions/products";
 
@@ -32,6 +33,7 @@ type Mode =
     };
 
 export function ProductForm(props: Mode) {
+  const router = useRouter();
   const [state, action, pending] = useActionState<
     ProductFormResult | null,
     FormData
@@ -39,6 +41,13 @@ export function ProductForm(props: Mode) {
 
   const initial = props.mode === "edit" ? props.initial : null;
   const [removeImage, setRemoveImage] = useState(false);
+
+  // After a successful save, re-fetch the surrounding Server Component data
+  // so any totals on the page stay in sync. The form's own input values
+  // already reflect the user's typed input, so they don't visually change.
+  useEffect(() => {
+    if (state && state.ok) router.refresh();
+  }, [state, router]);
 
   return (
     <form action={action} className="space-y-5">
@@ -111,13 +120,17 @@ export function ProductForm(props: Mode) {
         </Field>
       </div>
 
-      <Field label="Stock" hint="Empty = unlimited.">
+      <Field
+        label="Stock"
+        hint="Leave blank for unlimited stock. Typing 0 means out of stock — ambassadors won't be able to redeem."
+      >
         <input
           name="stock"
           type="number"
           min={0}
           max={1_000_000}
           step={1}
+          placeholder="(blank = unlimited)"
           defaultValue={initial?.stock ?? ""}
           disabled={pending}
           suppressHydrationWarning
@@ -163,6 +176,12 @@ export function ProductForm(props: Mode) {
         <div className="flex items-start gap-2.5 text-[13px] text-amber-500 bg-amber-500/10 rounded-xl px-4 py-3 ring-1 ring-amber-500/30">
           <AlertCircle size={16} className="mt-0.5 shrink-0" />
           <span>{state.error}</span>
+        </div>
+      )}
+      {state && state.ok && (
+        <div className="flex items-start gap-2.5 text-[13px] text-cyan-500 bg-cyan-50 rounded-xl px-4 py-3 ring-1 ring-cyan-300/60">
+          <Check size={16} className="mt-0.5 shrink-0" />
+          <span>Saved.</span>
         </div>
       )}
 

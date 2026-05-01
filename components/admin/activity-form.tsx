@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, Check, Save } from "lucide-react";
 
 import type { ActivityFormResult } from "@/app/actions/activities";
 
@@ -21,6 +22,7 @@ type Mode =
     };
 
 export function ActivityForm(props: Mode) {
+  const router = useRouter();
   const [state, action, pending] = useActionState<
     ActivityFormResult | null,
     FormData
@@ -28,6 +30,10 @@ export function ActivityForm(props: Mode) {
 
   const initial = props.mode === "edit" ? props.initial : null;
   const [removeCover, setRemoveCover] = useState(false);
+
+  useEffect(() => {
+    if (state && state.ok) router.refresh();
+  }, [state, router]);
 
   return (
     <form action={action} className="space-y-5">
@@ -124,6 +130,12 @@ export function ActivityForm(props: Mode) {
         <div className="flex items-start gap-2.5 text-[13px] text-amber-500 bg-amber-500/10 rounded-xl px-4 py-3 ring-1 ring-amber-500/30">
           <AlertCircle size={16} className="mt-0.5 shrink-0" />
           <span>{state.error}</span>
+        </div>
+      )}
+      {state && state.ok && (
+        <div className="flex items-start gap-2.5 text-[13px] text-cyan-500 bg-cyan-50 rounded-xl px-4 py-3 ring-1 ring-cyan-300/60">
+          <Check size={16} className="mt-0.5 shrink-0" />
+          <span>Saved.</span>
         </div>
       )}
 

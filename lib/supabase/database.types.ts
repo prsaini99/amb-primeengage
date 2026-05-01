@@ -2,7 +2,7 @@
  * GENERATED FILE — do not edit by hand.
  *
  * Source: live Supabase project zpciertrkqwzuuektzpj
- * Generated: 2026-04-25T11:05:15.464Z
+ * Generated: 2026-04-29T07:35:15.083Z
  * Generator: scripts/generate-types.mjs (after scripts/introspect-schema.mjs)
  */
 export type Json =
@@ -142,6 +142,7 @@ export type Database = {
           fulfillment_status: string;
           admin_notes: string | null;
           created_at: string;
+          razorpay_order_id: string | null;
         };
         Insert: {
           id?: string;
@@ -154,6 +155,7 @@ export type Database = {
           fulfillment_status?: string;
           admin_notes?: string | null;
           created_at?: string;
+          razorpay_order_id?: string | null;
         };
         Update: {
           id?: string;
@@ -166,6 +168,7 @@ export type Database = {
           fulfillment_status?: string;
           admin_notes?: string | null;
           created_at?: string;
+          razorpay_order_id?: string | null;
         };
         Relationships: [];
       };

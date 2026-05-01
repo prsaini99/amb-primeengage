@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, Send } from "lucide-react";
 
 const POLL_INTERVAL_MS = 5_000;
@@ -32,12 +33,21 @@ export function ChatThread({
   otherProfileId,
   otherDisplayName,
   initialMessages,
+  embedded = false,
 }: {
   selfProfileId: string;
   otherProfileId: string;
   otherDisplayName: string;
   initialMessages: ChatMessage[];
+  /**
+   * When `true`, drops the outer card chrome (rounded / bg / ring / fixed
+   * height) so the parent layout can wrap the thread in a custom container —
+   * used by the admin's WhatsApp-style chat layout where the thread sits
+   * inside a larger split-pane card.
+   */
+  embedded?: boolean;
 }) {
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -50,15 +60,25 @@ export function ChatThread({
 
   const markRead = useCallback(async () => {
     try {
-      await fetch("/api/chat/messages/read", {
+      const res = await fetch("/api/chat/messages/read", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ from: otherProfileId }),
       });
+      const json = (await res.json().catch(() => null)) as
+        | { marked?: number }
+        | null;
+      // If we actually flipped any rows, re-render the surrounding server
+      // components so e.g. the admin's chat-list sidebar updates its
+      // unread badge counts. No-op for ambassador (single thread, nothing
+      // to refresh visually).
+      if (json && typeof json.marked === "number" && json.marked > 0) {
+        router.refresh();
+      }
     } catch {
       // best-effort; the next poll cycle will retry implicitly
     }
-  }, [otherProfileId]);
+  }, [otherProfileId, router]);
 
   const refetchTail = useCallback(async () => {
     try {
@@ -155,8 +175,12 @@ export function ChatThread({
     });
   }
 
+  const containerCls = embedded
+    ? "flex flex-col h-full"
+    : "flex flex-col h-[calc(100vh-12rem)] min-h-[440px] rounded-2xl bg-paper-2 ring-1 ring-line overflow-hidden";
+
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] min-h-[440px] rounded-2xl bg-paper-2 ring-1 ring-line overflow-hidden">
+    <div className={containerCls}>
       <header className="px-5 py-4 border-b border-line">
         <p className="text-[11.5px] font-semibold uppercase tracking-[0.16em] text-mute">
           Chat

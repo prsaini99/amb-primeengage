@@ -32,7 +32,7 @@ export default async function AdminOrdersPage({
   const filter = (
     ["all", "pending", "fulfilled", "cancelled"].includes(params.status ?? "")
       ? params.status
-      : "pending"
+      : "all"
   ) as StatusFilter;
 
   const sb = createAdminClient();
@@ -72,7 +72,7 @@ export default async function AdminOrdersPage({
     <>
       <PageHeading
         title="Orders"
-        subtitle={`${counts.pending} awaiting fulfillment · ${counts.fulfilled} fulfilled · ${counts.cancelled} cancelled`}
+        subtitle={`${counts.fulfilled} fulfilled · ${counts.pending} awaiting payment · ${counts.cancelled} cancelled`}
       />
 
       <FilterBar>
@@ -80,16 +80,16 @@ export default async function AdminOrdersPage({
           All ({counts.all})
         </FilterChipLink>
         <FilterChipLink
-          href="/admin/orders?status=pending"
-          active={filter === "pending"}
-        >
-          Pending ({counts.pending})
-        </FilterChipLink>
-        <FilterChipLink
           href="/admin/orders?status=fulfilled"
           active={filter === "fulfilled"}
         >
           Fulfilled ({counts.fulfilled})
+        </FilterChipLink>
+        <FilterChipLink
+          href="/admin/orders?status=pending"
+          active={filter === "pending"}
+        >
+          Awaiting payment ({counts.pending})
         </FilterChipLink>
         <FilterChipLink
           href="/admin/orders?status=cancelled"

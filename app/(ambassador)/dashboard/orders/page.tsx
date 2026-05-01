@@ -11,7 +11,9 @@ function fulfillmentTone(s: string):
   | { tone: "success" | "warn" | "danger" | "info"; label: string } {
   if (s === "fulfilled") return { tone: "success", label: "fulfilled" };
   if (s === "cancelled") return { tone: "danger", label: "cancelled" };
-  return { tone: "info", label: "pending" };
+  // Phase 3: pure-points orders never sit in 'pending'; only hybrid orders
+  // mid-Razorpay land here.
+  return { tone: "info", label: "awaiting payment" };
 }
 
 export default async function MyOrdersPage() {

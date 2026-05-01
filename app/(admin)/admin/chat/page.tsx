@@ -1,35 +1,30 @@
-import Link from "next/link";
-
-import { PageHeading, fmtDate } from "@/components/admin/table";
+import {
+  AdminChatExperience,
+} from "@/components/admin/admin-chat-experience";
+import {
+  type ChatListAmbassador,
+  type ChatListRow,
+} from "@/components/admin/chat-list";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Chat · Admin" };
 
-type Ambassador = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-};
+export default async function AdminChatPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ with?: string }>;
+}) {
+  const params = await searchParams;
+  const initialSelectedId = params.with;
 
-type ThreadRow = {
-  ambassador: Ambassador;
-  lastMessage: { body: string; created_at: string; from_admin: boolean } | null;
-  unread: number;
-};
-
-export default async function AdminChatListPage() {
   const gate = await requireAdmin();
-  // gate fails inside requireAdmin's redirect chain; if we got here, gate.ok is true.
   if (!gate.ok) return null;
 
   const adminProfileId = gate.profileId;
   const sb = createAdminClient();
 
-  // Fetch all approved ambassadors + every chat message that involves admin.
-  // Two queries; merged in JS. Cardinality is small in Phase 1.
   const [ambsRes, msgsRes] = await Promise.all([
     sb
       .from("amb_profiles")
@@ -44,11 +39,11 @@ export default async function AdminChatListPage() {
       .order("created_at", { ascending: false }),
   ]);
 
-  const ambassadors = (ambsRes.data ?? []) as Ambassador[];
+  const ambassadors = (ambsRes.data ?? []) as ChatListAmbassador[];
   const msgs = msgsRes.data ?? [];
 
-  // Group: per-ambassador, last message + unread count from them.
-  const lastByAmb = new Map<string, ThreadRow["lastMessage"]>();
+  // Aggregate: per-ambassador, last message + unread count from them.
+  const lastByAmb = new Map<string, ChatListRow["lastMessage"]>();
   const unreadByAmb = new Map<string, number>();
   for (const m of msgs) {
     const otherId =
@@ -65,7 +60,7 @@ export default async function AdminChatListPage() {
     }
   }
 
-  const rows: ThreadRow[] = ambassadors.map((a) => ({
+  const rows: ChatListRow[] = ambassadors.map((a) => ({
     ambassador: a,
     lastMessage: lastByAmb.get(a.id) ?? null,
     unread: unreadByAmb.get(a.id) ?? 0,
@@ -85,72 +80,23 @@ export default async function AdminChatListPage() {
   const totalUnread = rows.reduce((sum, r) => sum + r.unread, 0);
 
   return (
-    <>
-      <PageHeading
-        title="Chat"
-        subtitle={
-          totalUnread > 0
+    <div className="flex flex-col gap-4 h-[calc(100vh-8rem)]">
+      <div>
+        <h1 className="font-display text-3xl font-semibold text-navy-900">
+          Chat
+        </h1>
+        <p className="text-[13.5px] text-mute mt-1">
+          {totalUnread > 0
             ? `${totalUnread} unread message${totalUnread === 1 ? "" : "s"} across ${rows.filter((r) => r.unread > 0).length} thread${rows.filter((r) => r.unread > 0).length === 1 ? "" : "s"}.`
-            : "All caught up."
-        }
+            : "All caught up."}
+        </p>
+      </div>
+
+      <AdminChatExperience
+        rows={rows}
+        initialSelectedId={initialSelectedId}
+        adminProfileId={adminProfileId}
       />
-
-      {rows.length === 0 && (
-        <div className="rounded-2xl bg-paper-2 ring-1 ring-line p-10 text-center">
-          <p className="text-[14px] text-mute">
-            No approved ambassadors yet. Approve some applications to start chatting.
-          </p>
-        </div>
-      )}
-
-      {rows.length > 0 && (
-        <div className="rounded-2xl bg-paper-2 ring-1 ring-line overflow-hidden">
-          <ul className="divide-y divide-line">
-            {rows.map((r) => (
-              <li key={r.ambassador.id}>
-                <Link
-                  href={`/admin/chat/${r.ambassador.id}`}
-                  className="flex items-center gap-4 px-5 py-4 hover:bg-paper/60 transition-colors"
-                >
-                  <div className="h-10 w-10 rounded-full brand-gradient text-white grid place-items-center text-[12px] font-semibold uppercase shrink-0">
-                    {(r.ambassador.first_name[0] ?? "A") +
-                      (r.ambassador.last_name[0] ?? "")}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <div className="font-semibold text-navy-900 truncate">
-                        {r.ambassador.first_name} {r.ambassador.last_name}
-                      </div>
-                      {r.lastMessage && (
-                        <div className="text-[11.5px] text-mute whitespace-nowrap">
-                          {fmtDate(r.lastMessage.created_at)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 mt-0.5">
-                      <p
-                        className={
-                          "text-[13px] truncate flex-1 " +
-                          (r.unread > 0 ? "text-navy-900 font-medium" : "text-mute")
-                        }
-                      >
-                        {r.lastMessage
-                          ? `${r.lastMessage.from_admin ? "You: " : ""}${r.lastMessage.body}`
-                          : "No messages yet — start the conversation."}
-                      </p>
-                      {r.unread > 0 && (
-                        <span className="shrink-0 inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-amber-500 text-white text-[11px] font-bold">
-                          {r.unread}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
