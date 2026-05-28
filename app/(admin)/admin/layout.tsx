@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
-import { ClipboardList, Users, Megaphone, ImageIcon, MessageSquare, ShoppingBag, Receipt, Settings, LogOut, Bell } from "lucide-react";
+import { ClipboardList, Users, Megaphone, ImageIcon, MessageSquare, ShoppingBag, Receipt, LogOut, Bell, Trophy } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions/auth";
 
@@ -25,7 +25,7 @@ const nav = [
   { href: "/admin/chat", label: "Chat", icon: MessageSquare },
   { href: "/admin/products", label: "Products", icon: ShoppingBag },
   { href: "/admin/orders", label: "Orders", icon: Receipt },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin/tiers", label: "Tiers", icon: Trophy },
 ];
 
 export default async function AdminLayout({

@@ -1,6 +1,7 @@
 import { requireAmbassadorForApi } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { razorpay } from "@/lib/razorpay";
+import { getUserTier } from "@/lib/tiers";
 
 /**
  * POST /api/dashboard/orders/payment-init
@@ -70,8 +71,9 @@ export async function POST(req: Request) {
     const sb = createAdminClient();
     const sbRpc = sb as unknown as SbWithRpc;
 
-    // Read product, balance, and rate in parallel.
-    const [productRes, balRes, rateRes] = await Promise.all([
+    // Read product, balance, and the caller's tier in parallel. Each tier
+    // carries its own points_to_inr_rate which prices the shortfall.
+    const [productRes, balRes, tier] = await Promise.all([
       sb
         .from("amb_products")
         .select("id, name, points_cost, inr_cost, is_active, stock")
@@ -82,11 +84,7 @@ export async function POST(req: Request) {
         .select("balance")
         .eq("user_id", gate.ctx.profileId)
         .maybeSingle(),
-      sb
-        .from("amb_settings")
-        .select("value")
-        .eq("key", "points_to_inr_rate")
-        .maybeSingle(),
+      getUserTier(sb, gate.ctx.profileId),
     ]);
 
     const product = productRes.data;
@@ -133,11 +131,10 @@ export async function POST(req: Request) {
       );
     }
 
-    const rateRaw = rateRes.data?.value;
-    const rate =
-      typeof rateRaw === "number"
-        ? rateRaw
-        : Number(rateRaw ?? DEFAULT_RATE) || DEFAULT_RATE;
+    // Tier-driven rate, with the legacy DEFAULT_RATE as a final fallback if
+    // amb_user_tier() returns no row (shouldn't happen — rank 1 has
+    // threshold 0 — but the float fallback keeps the route from crashing).
+    const rate = tier?.points_to_inr_rate ?? DEFAULT_RATE;
 
     // Ceil so we never under-charge by sub-paise rounding. The DB function
     // re-validates this expectation with a 1-paise tolerance.

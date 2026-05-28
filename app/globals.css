@@ -160,3 +160,20 @@ img, svg, video, canvas { max-width: 100%; height: auto; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--paper); }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; }
+
+/* Hide the native up/down spinner on numeric inputs that opt in via
+   `class="no-spinner"`. Default browser arrows are noisy in admin grids
+   where we want the field to read like a flat text input.
+   `appearance: none` is enough for most builds; `display: none` is the
+   belt-and-suspenders for Chrome variants that ignore it. */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+          appearance: none !important;
+  display: none !important;
+  margin: 0;
+}
+.no-spinner {
+  -moz-appearance: textfield !important;
+       appearance: textfield !important;
+}

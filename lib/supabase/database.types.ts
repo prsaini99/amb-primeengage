@@ -2,7 +2,7 @@
  * GENERATED FILE — do not edit by hand.
  *
  * Source: live Supabase project zpciertrkqwzuuektzpj
- * Generated: 2026-04-29T07:35:15.083Z
+ * Generated: 2026-05-04T10:32:03.904Z
  * Generator: scripts/generate-types.mjs (after scripts/introspect-schema.mjs)
  */
 export type Json =
@@ -298,24 +298,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      amb_settings: {
-        Row: {
-          key: string;
-          value: Json;
-          updated_at: string;
-        };
-        Insert: {
-          key: string;
-          value: Json;
-          updated_at?: string;
-        };
-        Update: {
-          key?: string;
-          value?: Json;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
       amb_submission_files: {
         Row: {
           id: string;
@@ -376,6 +358,30 @@ export type Database = {
           reviewed_by?: string | null;
           reviewed_at?: string | null;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      amb_tiers: {
+        Row: {
+          rank: number;
+          name: string;
+          threshold_points: number;
+          points_to_inr_rate: number;
+          updated_at: string;
+        };
+        Insert: {
+          rank: number;
+          name: string;
+          threshold_points: number;
+          points_to_inr_rate: number;
+          updated_at?: string;
+        };
+        Update: {
+          rank?: number;
+          name?: string;
+          threshold_points?: number;
+          points_to_inr_rate?: number;
+          updated_at?: string;
         };
         Relationships: [];
       };

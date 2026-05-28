@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, Crown, Star, Trophy } from "lucide-react";
+import { ArrowRight, Crown, Sparkles, Star, Trophy } from "lucide-react";
 
 import { fmtDate } from "@/components/admin/table";
 import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getUserTier, type UserTier } from "@/lib/tiers";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard · Yuvaah" };
@@ -15,8 +16,8 @@ export default async function DashboardHome() {
   const { profileId, profile } = await requireAmbassador();
   const sb = createAdminClient();
 
-  // All five aggregates in parallel.
-  const [balanceRes, totalEarnedRes, submissionsRes, activitiesRes, leaderboardRes, recentLedgerRes] =
+  // All aggregates in parallel.
+  const [balanceRes, totalEarnedRes, submissionsRes, activitiesRes, leaderboardRes, recentLedgerRes, tier, tiersRes] =
     await Promise.all([
       sb.from("amb_v_user_balances").select("balance").eq("user_id", profileId).maybeSingle(),
       // Total earned = submission_awarded + award_adjustment. Award
@@ -38,6 +39,13 @@ export default async function DashboardHome() {
         .eq("user_id", profileId)
         .order("created_at", { ascending: false })
         .limit(RECENT_ACTIVITY_LIMIT),
+      getUserTier(sb, profileId),
+      // The full tier ladder so members can see what's above (and below)
+      // their current rank — a motivation nudge.
+      sb
+        .from("amb_tiers")
+        .select("rank, name, threshold_points, points_to_inr_rate")
+        .order("rank", { ascending: true }),
     ]);
 
   const balance = balanceRes.data?.balance ?? 0;
@@ -49,6 +57,13 @@ export default async function DashboardHome() {
   const openActivitiesCount = activitiesRes.count ?? 0;
   const leaderboard = leaderboardRes.data ?? [];
   const recentLedger = recentLedgerRes.data ?? [];
+  const allTiers = (tiersRes.data ?? []).map((t) => ({
+    rank: t.rank,
+    name: t.name,
+    threshold_points: t.threshold_points,
+    // numeric columns serialize as strings via PostgREST.
+    points_to_inr_rate: Number(t.points_to_inr_rate),
+  }));
 
   // Resolve activity titles for ledger rows whose reference_id points at a
   // submission. One round-trip to fetch all referenced submissions, then
@@ -69,6 +84,11 @@ export default async function DashboardHome() {
           points.
         </p>
       </header>
+
+      {tier && <TierCard tier={tier} />}
+      {allTiers.length > 0 && (
+        <TierLadder tiers={allTiers} currentRank={tier?.rank ?? null} />
+      )}
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -217,6 +237,155 @@ export default async function DashboardHome() {
             </ol>
           )}
         </aside>
+      </div>
+    </div>
+  );
+}
+
+type TierLadderRow = {
+  rank: number;
+  name: string;
+  threshold_points: number;
+  points_to_inr_rate: number;
+};
+
+function TierLadder({
+  tiers,
+  currentRank,
+}: {
+  tiers: TierLadderRow[];
+  currentRank: number | null;
+}) {
+  return (
+    <section className="rounded-2xl bg-paper-2 ring-1 ring-line p-5 md:p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Trophy size={14} className="text-amber-500" />
+        <h2 className="text-[11.5px] font-semibold uppercase tracking-[0.16em] text-mute">
+          Tier ladder
+        </h2>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {tiers.map((t) => {
+          const isCurrent = t.rank === currentRank;
+          const achieved = currentRank !== null && t.rank < currentRank;
+          return (
+            <div
+              key={t.rank}
+              className={
+                "rounded-xl p-3.5 ring-1 transition-colors " +
+                (isCurrent
+                  ? "bg-amber-500/10 ring-amber-500/40"
+                  : achieved
+                    ? "bg-paper ring-line"
+                    : "bg-paper ring-line")
+              }
+            >
+              <div className="flex items-center justify-between">
+                <span
+                  className={
+                    "inline-flex items-center justify-center h-6 w-6 rounded-full text-[11px] font-display font-bold " +
+                    (isCurrent
+                      ? "bg-amber-500 text-white"
+                      : achieved
+                        ? "bg-cyan-500/15 text-navy-800 ring-1 ring-cyan-300/60"
+                        : "bg-paper-2 text-mute ring-1 ring-line")
+                  }
+                >
+                  {t.rank}
+                </span>
+                {isCurrent && (
+                  <span className="text-[9.5px] font-semibold uppercase tracking-wider text-amber-500">
+                    you
+                  </span>
+                )}
+                {achieved && !isCurrent && (
+                  <span className="text-[9.5px] font-semibold uppercase tracking-wider text-cyan-500">
+                    reached
+                  </span>
+                )}
+              </div>
+              <div className="mt-2 font-display text-[16px] font-semibold text-navy-900 truncate">
+                {t.name}
+              </div>
+              <div className="mt-1 text-[11.5px] text-mute font-mono">
+                {t.threshold_points === 0
+                  ? "From 0 pts"
+                  : `${t.threshold_points.toLocaleString()}+ pts`}
+              </div>
+              <div className="mt-0.5 text-[11.5px] text-mute">
+                ₹{t.points_to_inr_rate.toFixed(2)} per point
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function TierCard({ tier }: { tier: UserTier }) {
+  const atTop = tier.next_threshold === null;
+  // Width of the progress bar, as a percentage of the gap between this
+  // tier's threshold and the next tier's. Clamped 0..100 because
+  // lifetime_earned can briefly exceed the next threshold during the same
+  // RPC call but before the row recomputes (it can't, actually — the RPC
+  // is consistent — but the clamp is cheap and forgiving).
+  const span = atTop ? 0 : (tier.next_threshold ?? 0) - tier.threshold_points;
+  const progressed = Math.max(0, tier.lifetime_earned - tier.threshold_points);
+  const pct = atTop
+    ? 100
+    : Math.min(100, Math.max(0, span > 0 ? (progressed / span) * 100 : 0));
+  const toGo = atTop
+    ? 0
+    : Math.max(0, (tier.next_threshold ?? 0) - tier.lifetime_earned);
+
+  return (
+    <div className="rounded-2xl bg-paper-2 ring-1 ring-line p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5">
+      <div className="flex items-center gap-4 md:min-w-[280px]">
+        <div className="h-14 w-14 rounded-2xl bg-amber-500/10 ring-1 ring-amber-500/30 grid place-items-center text-amber-500 shrink-0">
+          <Sparkles size={22} />
+        </div>
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-mute font-semibold">
+            Your tier
+          </div>
+          <div className="font-display text-2xl font-semibold text-navy-900 mt-0.5">
+            {tier.name}
+            <span className="text-mute font-normal text-[13px] ml-2">
+              · Level {tier.rank}
+            </span>
+          </div>
+          <div className="text-[12.5px] text-mute mt-0.5">
+            ₹{tier.points_to_inr_rate.toFixed(2)} per point at checkout
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline justify-between gap-3 mb-1.5">
+          <div className="text-[12px] text-mute">
+            Lifetime earned:{" "}
+            <span className="font-semibold text-navy-900">
+              {tier.lifetime_earned}
+            </span>{" "}
+            pts
+          </div>
+          <div className="text-[12px] text-mute">
+            {atTop
+              ? "Top tier — keep earning to stay there."
+              : `${toGo} pts to next tier`}
+          </div>
+        </div>
+        <div className="h-2 rounded-full bg-paper ring-1 ring-line overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-amber-500 to-amber-400"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div className="mt-1.5 flex justify-between text-[11px] font-mono text-mute">
+          <span>{tier.threshold_points}</span>
+          {!atTop && <span>{tier.next_threshold}</span>}
+        </div>
       </div>
     </div>
   );

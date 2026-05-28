@@ -6,6 +6,7 @@ import { Badge, inr } from "@/components/admin/table";
 import { RedemptionPanel } from "@/components/dashboard/redemption-panel";
 import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getUserTier } from "@/lib/tiers";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export default async function StoreProductDetailPage({
   const { profileId } = await requireAmbassador();
   const sb = createAdminClient();
 
-  const [productRes, balRes, rateRes] = await Promise.all([
+  const [productRes, balRes, tier] = await Promise.all([
     sb
       .from("amb_products")
       .select("id, type, name, description, image_url, points_cost, inr_cost, stock, is_active")
@@ -31,11 +32,7 @@ export default async function StoreProductDetailPage({
       .select("balance")
       .eq("user_id", profileId)
       .maybeSingle(),
-    sb
-      .from("amb_settings")
-      .select("value")
-      .eq("key", "points_to_inr_rate")
-      .maybeSingle(),
+    getUserTier(sb, profileId),
   ]);
 
   const product = productRes.data;
@@ -43,11 +40,7 @@ export default async function StoreProductDetailPage({
 
   const balance = balRes.data?.balance ?? 0;
   const inrCost = Number(product.inr_cost);
-  const rateRaw = rateRes.data?.value;
-  const rate =
-    typeof rateRaw === "number"
-      ? rateRaw
-      : Number(rateRaw ?? DEFAULT_RATE) || DEFAULT_RATE;
+  const rate = tier?.points_to_inr_rate ?? DEFAULT_RATE;
 
   const outOfStock = product.stock !== null && product.stock <= 0;
   const moneyRequired = inrCost > 0; // intrinsic-INR products still gated
@@ -112,8 +105,14 @@ export default async function StoreProductDetailPage({
                 <span className="text-[14px] text-mute">+ {inr(inrCost)}</span>
               )}
             </div>
-            <div className="mt-3 text-[12.5px] text-mute">
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] text-mute">
               {product.stock !== null && <span>{product.stock} in stock</span>}
+              {tier && (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-1 w-1 rounded-full bg-mute" />
+                  Your rate: ₹{tier.points_to_inr_rate.toFixed(2)} per point ({tier.name})
+                </span>
+              )}
             </div>
           </div>
 
