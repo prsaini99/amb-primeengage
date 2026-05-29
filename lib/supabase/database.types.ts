@@ -2,7 +2,7 @@
  * GENERATED FILE — do not edit by hand.
  *
  * Source: live Supabase project zpciertrkqwzuuektzpj
- * Generated: 2026-05-04T10:32:03.904Z
+ * Generated: 2026-05-29T09:54:23.708Z
  * Generator: scripts/generate-types.mjs (after scripts/introspect-schema.mjs)
  */
 export type Json =
@@ -259,6 +259,7 @@ export type Database = {
           created_at: string;
           approved_at: string | null;
           rejected_at: string | null;
+          referral_code: string | null;
         };
         Insert: {
           id?: string;
@@ -277,6 +278,7 @@ export type Database = {
           created_at?: string;
           approved_at?: string | null;
           rejected_at?: string | null;
+          referral_code?: string | null;
         };
         Update: {
           id?: string;
@@ -295,6 +297,7 @@ export type Database = {
           created_at?: string;
           approved_at?: string | null;
           rejected_at?: string | null;
+          referral_code?: string | null;
         };
         Relationships: [];
       };

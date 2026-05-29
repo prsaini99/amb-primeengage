@@ -71,7 +71,10 @@ export async function updateActivity(
   const gate = await requireAdmin();
   if (!gate.ok) return { ok: false, error: "Not authorized." };
 
-  const parsed = parseActivityForm(formData);
+  // allowPastDeadline: an existing activity may already be closed. The
+  // admin must still be able to edit other fields (title, cover, points)
+  // without being forced to bump the deadline into the future.
+  const parsed = parseActivityForm(formData, { allowPastDeadline: true });
   if (!parsed.ok) return parsed;
 
   const sb = createAdminClient();
@@ -135,7 +138,10 @@ type ParsedActivity =
     }
   | ParseError;
 
-function parseActivityForm(formData: FormData): ParsedActivity {
+function parseActivityForm(
+  formData: FormData,
+  opts: { allowPastDeadline?: boolean } = {},
+): ParsedActivity {
   const title = String(formData.get("title") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const pointsRaw = String(formData.get("points") ?? "").trim();
@@ -163,7 +169,7 @@ function parseActivityForm(formData: FormData): ParsedActivity {
   if (Number.isNaN(deadline.getTime())) {
     return { ok: false, error: "Submission deadline is invalid." };
   }
-  if (deadline.getTime() <= Date.now()) {
+  if (!opts.allowPastDeadline && deadline.getTime() <= Date.now()) {
     return { ok: false, error: "Submission deadline must be in the future." };
   }
 

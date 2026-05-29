@@ -45,7 +45,7 @@ export default async function ApplicationsPage({
   let query = sb
     .from("amb_profiles")
     .select(
-      "id, status, first_name, last_name, email, phone, college, city, application_data, created_at",
+      "id, status, first_name, last_name, email, phone, college, city, application_data, referral_code, created_at",
     )
     .eq("role", "ambassador")
     .order("created_at", { ascending: false });
@@ -113,6 +113,7 @@ export default async function ApplicationsPage({
             <Th>Email / Phone</Th>
             <Th>College / City</Th>
             <Th>Followers</Th>
+            <Th>Referral</Th>
             <Th>Status</Th>
             <Th>{""}</Th>
           </tr>
@@ -121,7 +122,7 @@ export default async function ApplicationsPage({
           {(!rows || rows.length === 0) && (
             <tr>
               <td
-                colSpan={7}
+                colSpan={8}
                 className="px-4 py-10 text-center text-mute border-b border-line"
               >
                 No applications match this filter.
@@ -149,6 +150,15 @@ export default async function ApplicationsPage({
                   <div className="text-mute text-[12.5px]">{r.city}</div>
                 </Td>
                 <Td className="text-mute">{data?.follower_range ?? "—"}</Td>
+                <Td>
+                  {r.referral_code ? (
+                    <span className="font-mono text-[12.5px] text-navy-900">
+                      {r.referral_code}
+                    </span>
+                  ) : (
+                    <span className="text-mute">—</span>
+                  )}
+                </Td>
                 <Td>
                   <Badge tone={statusTone(r.status)}>{r.status}</Badge>
                 </Td>

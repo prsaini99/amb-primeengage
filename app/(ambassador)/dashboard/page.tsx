@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Crown, Sparkles, Star, Trophy } from "lucide-react";
 
 import { fmtDate } from "@/components/admin/table";
+import { ReferralCodeCard } from "@/components/dashboard/referral-code-card";
 import { requireAmbassador } from "@/lib/auth/require-ambassador";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserTier, type UserTier } from "@/lib/tiers";
@@ -17,7 +18,7 @@ export default async function DashboardHome() {
   const sb = createAdminClient();
 
   // All aggregates in parallel.
-  const [balanceRes, totalEarnedRes, submissionsRes, activitiesRes, leaderboardRes, recentLedgerRes, tier, tiersRes] =
+  const [balanceRes, totalEarnedRes, submissionsRes, activitiesRes, leaderboardRes, recentLedgerRes, tier, tiersRes, profileRes] =
     await Promise.all([
       sb.from("amb_v_user_balances").select("balance").eq("user_id", profileId).maybeSingle(),
       // Total earned = submission_awarded + award_adjustment. Award
@@ -46,6 +47,11 @@ export default async function DashboardHome() {
         .from("amb_tiers")
         .select("rank, name, threshold_points, points_to_inr_rate")
         .order("rank", { ascending: true }),
+      sb
+        .from("amb_profiles")
+        .select("referral_code")
+        .eq("id", profileId)
+        .maybeSingle(),
     ]);
 
   const balance = balanceRes.data?.balance ?? 0;
@@ -64,6 +70,7 @@ export default async function DashboardHome() {
     // numeric columns serialize as strings via PostgREST.
     points_to_inr_rate: Number(t.points_to_inr_rate),
   }));
+  const referralCode = profileRes.data?.referral_code ?? null;
 
   // Resolve activity titles for ledger rows whose reference_id points at a
   // submission. One round-trip to fetch all referenced submissions, then
@@ -75,14 +82,17 @@ export default async function DashboardHome() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="font-display text-3xl font-semibold text-navy-900">
-          Welcome back, {profile.first_name}
-        </h1>
-        <p className="text-[14px] text-mute mt-1">
-          Here's where you stand. Open activities are your fastest path to more
-          points.
-        </p>
+      <header className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl font-semibold text-navy-900">
+            Welcome back, {profile.first_name}
+          </h1>
+          <p className="text-[14px] text-mute mt-1">
+            Here's where you stand. Open activities are your fastest path to more
+            points.
+          </p>
+        </div>
+        {referralCode && <ReferralCodeCard code={referralCode} />}
       </header>
 
       {tier && <TierCard tier={tier} />}

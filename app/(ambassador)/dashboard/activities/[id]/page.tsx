@@ -99,11 +99,15 @@ export default async function AmbassadorActivityDetailPage({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <section className="lg:col-span-2 space-y-6">
           {activity.cover_image_url && (
+            // Render the poster at its natural aspect ratio so the whole
+            // image is always visible — no fixed box, no cropping. `w-full`
+            // fills the column width and the global `img { height: auto }`
+            // rule (globals.css) keeps the height proportional.
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={activity.cover_image_url}
               alt=""
-              className="w-full aspect-[16/9] object-cover rounded-2xl ring-1 ring-line"
+              className="block w-full h-auto rounded-2xl ring-1 ring-line bg-paper"
             />
           )}
 

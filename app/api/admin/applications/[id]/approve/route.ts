@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendApprovalEmail } from "@/lib/mailer";
+import { generateUniqueReferralCode } from "@/lib/referral";
 
 /**
  * POST /api/admin/applications/[id]/approve
@@ -89,13 +90,21 @@ export async function POST(
   }
   const authUserId = created.user.id;
 
-  // Link + flip status. If this fails, roll back the auth user.
+  // Generate the member's unique referral code. If generation somehow fails
+  // (all attempts collided — practically impossible), leave it null; the
+  // admin can set one later from the application detail page. We never fail
+  // an approval over code generation.
+  const referralCode = await generateUniqueReferralCode(sb);
+
+  // Link + flip status + assign referral code. If this fails, roll back the
+  // auth user.
   const { error: updateErr } = await sb
     .from("amb_profiles")
     .update({
       auth_user_id: authUserId,
       status: "approved",
       approved_at: new Date().toISOString(),
+      referral_code: referralCode,
     })
     .eq("id", id);
   if (updateErr) {
@@ -121,6 +130,7 @@ export async function POST(
         auth_user_id: null,
         status: "pending",
         approved_at: null,
+        referral_code: null,
       })
       .eq("id", id);
     await sb.auth.admin.deleteUser(authUserId);

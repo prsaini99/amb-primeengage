@@ -4,6 +4,7 @@ import { ArrowLeft, FileText } from "lucide-react";
 
 import { Badge, fmtDate } from "@/components/admin/table";
 import { ApplicationActions } from "@/components/admin/application-actions";
+import { ReferralCodeEditor } from "@/components/admin/referral-code-editor";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ApplicationData } from "@/lib/ambassador/types";
 
@@ -29,7 +30,7 @@ export default async function ApplicationDetailPage({
   const { data: row, error } = await sb
     .from("amb_profiles")
     .select(
-      "id, role, status, first_name, last_name, email, phone, college, city, student_id_url, application_data, created_at, approved_at, rejected_at",
+      "id, role, status, first_name, last_name, email, phone, college, city, student_id_url, application_data, referral_code, created_at, approved_at, rejected_at",
     )
     .eq("id", id)
     .maybeSingle();
@@ -105,7 +106,7 @@ export default async function ApplicationDetailPage({
                 <KV label="Active platform" value={data.active_platform} />
                 <KV label="Follower range" value={data.follower_range} />
                 {data.referral_code && (
-                  <KV label="Referral code" value={data.referral_code} mono />
+                  <KV label="Referred by (code used)" value={data.referral_code} mono />
                 )}
               </Card>
 
@@ -133,6 +134,15 @@ export default async function ApplicationDetailPage({
                 credentials. Rejecting flips status and emails a polite
                 templated note. Both actions are one-shot per application.
               </p>
+            </Card>
+          )}
+
+          {row.status === "approved" && (
+            <Card title="Referral code">
+              <ReferralCodeEditor
+                profileId={row.id}
+                initialCode={row.referral_code}
+              />
             </Card>
           )}
 
