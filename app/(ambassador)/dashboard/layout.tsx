@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { LayoutDashboard, ClipboardList, Megaphone, ImageIcon, MessageSquare, ShoppingBag, Receipt, LogOut, Bell } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Megaphone, ImageIcon, MessageSquare, ShoppingBag, Receipt, LogOut, Bell, HelpCircle } from "lucide-react";
 
 import { Logo } from "@/components/logo";
 import { requireAmbassador } from "@/lib/auth/require-ambassador";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { signOut } from "@/app/actions/auth";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +26,21 @@ export default async function DashboardLayout({
   const { profile } = await requireAmbassador();
   const displayName = `${profile.first_name} ${profile.last_name}`.trim();
 
+  // Show the Quiz link only while a round is live.
+  const sb = createAdminClient();
+  const { data: activeRound } = await sb
+    .from("yuvaah_quiz_rounds")
+    .select("id")
+    .eq("status", "active")
+    .maybeSingle();
+  const navItems = activeRound
+    ? [
+        ...nav.slice(0, 2),
+        { href: "/quiz", label: "Quiz", icon: HelpCircle },
+        ...nav.slice(2),
+      ]
+    : nav;
+
   return (
     <div className="min-h-screen bg-paper flex">
       <aside className="hidden md:flex w-[260px] shrink-0 flex-col border-r border-line bg-paper-2 sticky top-0 h-screen">
@@ -33,7 +49,7 @@ export default async function DashboardLayout({
         </div>
 
         <nav className="flex-1 p-3 space-y-1">
-          {nav.map(({ href, label, icon: Icon }) => (
+          {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}

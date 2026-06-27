@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "supabase:types": "node scripts/generate-types.mjs",
     "supabase:introspect": "node scripts/introspect-schema.mjs",
-    "seed:admin": "node scripts/seed-admin.mjs"
+    "seed:admin": "node scripts/seed-admin.mjs",
+    "test": "vitest run lib/quiz"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.2",
@@ -37,6 +38,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.9"
   }
 }

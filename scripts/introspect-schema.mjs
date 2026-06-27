@@ -49,7 +49,7 @@ const SQL_TABLES = `
   SELECT table_name
   FROM information_schema.tables
   WHERE table_schema = 'public'
-    AND table_name LIKE 'amb\\_%' ESCAPE '\\'
+    AND (table_name LIKE 'amb\\_%' ESCAPE '\\' OR table_name LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
   ORDER BY table_name;
 `;
 
@@ -65,7 +65,7 @@ const SQL_COLUMNS = `
     character_maximum_length
   FROM information_schema.columns
   WHERE table_schema = 'public'
-    AND table_name LIKE 'amb\\_%' ESCAPE '\\'
+    AND (table_name LIKE 'amb\\_%' ESCAPE '\\' OR table_name LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
   ORDER BY table_name, ordinal_position;
 `;
 
@@ -74,7 +74,7 @@ const SQL_INDEXES = `
     schemaname, tablename, indexname, indexdef
   FROM pg_indexes
   WHERE schemaname = 'public'
-    AND tablename LIKE 'amb\\_%' ESCAPE '\\'
+    AND (tablename LIKE 'amb\\_%' ESCAPE '\\' OR tablename LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
   ORDER BY tablename, indexname;
 `;
 
@@ -99,7 +99,7 @@ const SQL_CONSTRAINTS = `
   LEFT JOIN pg_class      forrel ON c.confrelid     = forrel.oid
   LEFT JOIN pg_namespace  forns  ON forrel.relnamespace = forns.oid
   WHERE conns.nspname = 'public'
-    AND conrel.relname LIKE 'amb\\_%' ESCAPE '\\'
+    AND (conrel.relname LIKE 'amb\\_%' ESCAPE '\\' OR conrel.relname LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
   ORDER BY conrel.relname, c.contype, c.conname;
 `;
 
@@ -107,7 +107,7 @@ const SQL_VIEWS = `
   SELECT table_name AS view_name, view_definition
   FROM information_schema.views
   WHERE table_schema = 'public'
-    AND table_name LIKE 'amb\\_%' ESCAPE '\\'
+    AND (table_name LIKE 'amb\\_%' ESCAPE '\\' OR table_name LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
   ORDER BY table_name;
 `;
 
@@ -122,7 +122,7 @@ const SQL_RLS = `
   SELECT relname AS table_name, relrowsecurity AS rls_enabled
   FROM pg_class
   WHERE relnamespace = 'public'::regnamespace
-    AND relname LIKE 'amb\\_%' ESCAPE '\\'
+    AND (relname LIKE 'amb\\_%' ESCAPE '\\' OR relname LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
     AND relkind = 'r'
   ORDER BY relname;
 `;
@@ -131,7 +131,7 @@ const SQL_POLICIES = `
   SELECT schemaname, tablename, policyname, roles, cmd, qual, with_check
   FROM pg_policies
   WHERE schemaname = 'public'
-    AND tablename LIKE 'amb\\_%' ESCAPE '\\'
+    AND (tablename LIKE 'amb\\_%' ESCAPE '\\' OR tablename LIKE 'yuvaah\\_quiz\\_%' ESCAPE '\\')
   ORDER BY tablename, policyname;
 `;
 
