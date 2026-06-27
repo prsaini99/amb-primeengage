@@ -1,22 +1,12 @@
 import Image from "next/image";
 
 /**
- * `size` is a rendered height in px.
- * `mobileSize` (optional) overrides size below the md breakpoint — handy for
- * the header, where the desktop logo is deliberately large.
+ * `size` is the rendered logo height in px. Width scales to the source aspect
+ * ratio. Height/width are applied via inline `style` (not Tailwind height
+ * utilities) so they reliably beat Tailwind v4 Preflight's `img { height: auto }`
+ * — otherwise the logo falls back to its full intrinsic size and overflows.
  */
-export function Logo({
-  size = 44,
-  mobileSize,
-}: {
-  size?: number;
-  mobileSize?: number;
-}) {
-  const cssVars: Record<string, string> = {
-    "--logo-h": `${size}px`,
-  };
-  if (mobileSize) cssVars["--logo-h-mobile"] = `${mobileSize}px`;
-
+export function Logo({ size = 44 }: { size?: number }) {
   return (
     <Image
       src="/Prime Engage Logo new transparent bg.png"
@@ -25,12 +15,7 @@ export function Logo({
       height={size * 4}
       priority
       sizes="(max-width: 768px) 200px, 512px"
-      className={
-        mobileSize
-          ? "h-[var(--logo-h-mobile)] md:h-[var(--logo-h)] w-auto"
-          : "h-[var(--logo-h)] w-auto"
-      }
-      style={cssVars as React.CSSProperties}
+      style={{ height: size, width: "auto" }}
     />
   );
 }
