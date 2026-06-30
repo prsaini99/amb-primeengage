@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Crown, Sparkles, Star, Trophy } from "lucide-react";
+import { ArrowRight, Crown, HelpCircle, Sparkles, Star, Trophy } from "lucide-react";
 
 import { fmtDate } from "@/components/admin/table";
 import { ReferralCodeCard } from "@/components/dashboard/referral-code-card";
@@ -18,7 +18,7 @@ export default async function DashboardHome() {
   const sb = createAdminClient();
 
   // All aggregates in parallel.
-  const [balanceRes, totalEarnedRes, submissionsRes, activitiesRes, leaderboardRes, recentLedgerRes, tier, tiersRes, profileRes] =
+  const [balanceRes, totalEarnedRes, submissionsRes, activitiesRes, leaderboardRes, recentLedgerRes, tier, tiersRes, profileRes, activeRoundRes] =
     await Promise.all([
       sb.from("amb_v_user_balances").select("balance").eq("user_id", profileId).maybeSingle(),
       // Total earned = submission_awarded + award_adjustment. Award
@@ -52,6 +52,13 @@ export default async function DashboardHome() {
         .select("referral_code")
         .eq("id", profileId)
         .maybeSingle(),
+      // Active quiz round (at most one). Drives the dashboard quiz card —
+      // only shown when a quiz is actually live.
+      sb
+        .from("yuvaah_quiz_rounds")
+        .select("id, title, questions_per_attempt, points_per_correct")
+        .eq("status", "active")
+        .maybeSingle(),
     ]);
 
   const balance = balanceRes.data?.balance ?? 0;
@@ -71,6 +78,34 @@ export default async function DashboardHome() {
     points_to_inr_rate: Number(t.points_to_inr_rate),
   }));
   const referralCode = profileRes.data?.referral_code ?? null;
+
+  // Quiz availability: only surface the card when a round is active. Reflect
+  // the member's attempt state (start / resume / completed).
+  const activeRound = activeRoundRes.data;
+  let quiz:
+    | null
+    | { state: "start" | "resume" | "done"; title: string; score: number | null; max: number } =
+    null;
+  if (activeRound) {
+    const { data: quizAttempt } = await sb
+      .from("yuvaah_quiz_attempts")
+      .select("status, score")
+      .eq("round_id", activeRound.id)
+      .eq("profile_id", profileId)
+      .maybeSingle();
+    const max = activeRound.questions_per_attempt * activeRound.points_per_correct;
+    const state = !quizAttempt
+      ? "start"
+      : quizAttempt.status === "in_progress"
+        ? "resume"
+        : "done";
+    quiz = {
+      state,
+      title: activeRound.title,
+      score: state === "done" ? quizAttempt?.score ?? 0 : null,
+      max,
+    };
+  }
 
   // Resolve activity titles for ledger rows whose reference_id points at a
   // submission. One round-trip to fetch all referenced submissions, then
@@ -94,6 +129,8 @@ export default async function DashboardHome() {
         </div>
         {referralCode && <ReferralCodeCard code={referralCode} />}
       </header>
+
+      {quiz && <QuizBanner quiz={quiz} />}
 
       {tier && <TierCard tier={tier} />}
       {allTiers.length > 0 && (
@@ -249,6 +286,47 @@ export default async function DashboardHome() {
         </aside>
       </div>
     </div>
+  );
+}
+
+function QuizBanner({
+  quiz,
+}: {
+  quiz: { state: "start" | "resume" | "done"; title: string; score: number | null; max: number };
+}) {
+  const cta =
+    quiz.state === "start"
+      ? "Take the quiz"
+      : quiz.state === "resume"
+        ? "Resume quiz"
+        : "View result";
+  const blurb =
+    quiz.state === "done"
+      ? `You scored ${quiz.score} / ${quiz.max}. Tap to review your result.`
+      : "Test your general knowledge — points count toward your balance & the leaderboard.";
+  return (
+    <Link
+      href="/quiz"
+      className="group flex items-center gap-4 rounded-2xl brand-gradient text-white p-5 md:p-6 ring-1 ring-line shadow-soft hover:-translate-y-0.5 transition-transform"
+    >
+      <div className="h-12 w-12 rounded-2xl bg-white/15 grid place-items-center shrink-0">
+        <HelpCircle size={22} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="font-display text-lg font-semibold truncate">{quiz.title}</span>
+          {quiz.state !== "done" && (
+            <span className="inline-flex items-center rounded-full bg-amber-400/90 text-navy-900 px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide">
+              Live
+            </span>
+          )}
+        </div>
+        <div className="text-[13px] text-white/80">{blurb}</div>
+      </div>
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-[13px] font-semibold shrink-0">
+        {cta} <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+      </span>
+    </Link>
   );
 }
 

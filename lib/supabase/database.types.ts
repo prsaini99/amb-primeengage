@@ -2,7 +2,7 @@
  * GENERATED FILE — do not edit by hand.
  *
  * Source: live Supabase project zpciertrkqwzuuektzpj
- * Generated: 2026-05-29T09:54:23.708Z
+ * Generated: 2026-06-27T10:32:57.954Z
  * Generator: scripts/generate-types.mjs (after scripts/introspect-schema.mjs)
  */
 export type Json =
@@ -385,6 +385,135 @@ export type Database = {
           threshold_points?: number;
           points_to_inr_rate?: number;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      yuvaah_quiz_attempts: {
+        Row: {
+          id: string;
+          round_id: string;
+          profile_id: string;
+          status: string;
+          assigned_question_ids: Json;
+          answers: Json;
+          score: number | null;
+          correct_count: number | null;
+          wrong_count: number | null;
+          unanswered_count: number | null;
+          started_at: string;
+          completed_at: string | null;
+          points_ledger_id: string | null;
+        };
+        Insert: {
+          id?: string;
+          round_id: string;
+          profile_id: string;
+          status?: string;
+          assigned_question_ids: Json;
+          answers?: Json;
+          score?: number | null;
+          correct_count?: number | null;
+          wrong_count?: number | null;
+          unanswered_count?: number | null;
+          started_at?: string;
+          completed_at?: string | null;
+          points_ledger_id?: string | null;
+        };
+        Update: {
+          id?: string;
+          round_id?: string;
+          profile_id?: string;
+          status?: string;
+          assigned_question_ids?: Json;
+          answers?: Json;
+          score?: number | null;
+          correct_count?: number | null;
+          wrong_count?: number | null;
+          unanswered_count?: number | null;
+          started_at?: string;
+          completed_at?: string | null;
+          points_ledger_id?: string | null;
+        };
+        Relationships: [];
+      };
+      yuvaah_quiz_questions: {
+        Row: {
+          id: string;
+          round_id: string;
+          category: string | null;
+          question: string;
+          option_a: string;
+          option_b: string;
+          option_c: string;
+          option_d: string;
+          correct_index: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          round_id: string;
+          category?: string | null;
+          question: string;
+          option_a: string;
+          option_b: string;
+          option_c: string;
+          option_d: string;
+          correct_index: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          round_id?: string;
+          category?: string | null;
+          question?: string;
+          option_a?: string;
+          option_b?: string;
+          option_c?: string;
+          option_d?: string;
+          correct_index?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      yuvaah_quiz_rounds: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          status: string;
+          time_limit_seconds: number | null;
+          points_per_correct: number;
+          questions_per_attempt: number;
+          created_by: string | null;
+          created_at: string;
+          activated_at: string | null;
+          closed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description?: string | null;
+          status?: string;
+          time_limit_seconds?: number | null;
+          points_per_correct?: number;
+          questions_per_attempt?: number;
+          created_by?: string | null;
+          created_at?: string;
+          activated_at?: string | null;
+          closed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string | null;
+          status?: string;
+          time_limit_seconds?: number | null;
+          points_per_correct?: number;
+          questions_per_attempt?: number;
+          created_by?: string | null;
+          created_at?: string;
+          activated_at?: string | null;
+          closed_at?: string | null;
         };
         Relationships: [];
       };
